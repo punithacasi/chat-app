@@ -6,18 +6,34 @@ import Chat from './components/Chat';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+
+// import the use NetInfo
+import { useNetInfo } from "@react-native-community/netinfo";
+import { useEffect } from "react";
+
 // Create the navigator
 const Stack = createNativeStackNavigator();
 
 import React from 'react';
-import { ImageBackground, StyleSheet, Text } from 'react-native';
+import { Alert, ImageBackground, StyleSheet, Text } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 
-// import Firebase
+// import firebase/app , disableNetwork /enableNetwork
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, disableNetwork, enableNetwork } from "firebase/firestore";
 
 const App = () => {
+
+  // connectionStatus
+  const connectionStatus = useNetInfo();
+  useEffect(() => {
+    if (connectionStatus.isConnected === false) {
+      Alert.alert("Connection Lost!");
+      disableNetwork(db);
+    } else if (connectionStatus.isConnected === true) {
+      enableNetwork(db);
+    }
+  }, [connectionStatus.isConnected]);
 
   // Initialize firebase Config
   const firebaseConfig = {
@@ -48,7 +64,8 @@ const App = () => {
         <Stack.Screen
           name="Chat"
         >
-          {props => <Chat db={db} {...props} />}
+          {props => <Chat isConnected={connectionStatus.isConnected} db={db} {...props} />}
+
         </Stack.Screen>
 
 
