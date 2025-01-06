@@ -25,7 +25,6 @@ const Start = ({ navigation }) => {
                     userID: result.user.uid, name: name,
                     backgroundColor: backgroundColor
                 });
-                console.log(result.user.uid);
                 Alert.alert("Signed in Successfully!");
             })
             .catch((error) => {
